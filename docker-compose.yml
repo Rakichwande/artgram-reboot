@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: artgram_backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://artgram_user:artgram_pass@db:5432/artgram_db
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  db:
+    image: postgres:14
+    container_name: artgram_db
+    restart: always
+    environment:
+      POSTGRES_USER: artgram_user
+      POSTGRES_PASSWORD: artgram_pass
+      POSTGRES_DB: artgram_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
